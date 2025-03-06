@@ -8,7 +8,6 @@ import { VoteService } from "../services/vote.service";
 import { Article } from "../models/article";
 import { User } from "../models/user";
 import { Vote } from "../models/vote";
-import { Domain } from "../models/domain";
 import { db } from "../data-source/data-source";
 
 
@@ -31,10 +30,10 @@ const voteController = new VoteController(voteService);
 const router = Router();
 
 
-router.post("/users/register", (req, res) => userController.register(req, res));
-router.post("/users/login", (req, res) => userController.login(req, res));
-router.get("/users/:id", (req, res) => userController.getUser(req, res));
-router.put("/users/:id", (req, res) => userController.updateUser(req, res));
+router.post("/register", (req, res) => userController.register(req, res));
+router.post("/login", (req, res) => userController.login(req, res));
+router.get("/:id", (req, res) => userController.getUser(req, res));
+router.put("/:id", (req, res) => userController.updateUser(req, res));
 
 
 router.post("/articles", (req, res) => articleController.createArticle(req, res));

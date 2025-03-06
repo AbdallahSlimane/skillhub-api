@@ -3,6 +3,9 @@ import express from "express";
 import { config } from "dotenv";
 import cors from 'cors';
 import {db, initialize_typeorm} from "./data-source/data-source";
+import userRoutes from "./routes/routes";
+import articlesroutes from "./routes/routes";
+import votesRoutes from "./routes/routes";
 
 config();
 
@@ -16,7 +19,9 @@ export async function startServer() {
         app.use(cors());
         // app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3001'] }));
 
-        // app.use('/user', userRoutes);
+        app.use('/user', userRoutes);
+        app.use('/article', userRoutes);
+        app.use('/vote', userRoutes);
 
         await initialize_typeorm(db);
         console.log("Database connected successfully");
