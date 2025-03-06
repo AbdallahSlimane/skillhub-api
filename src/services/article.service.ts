@@ -2,8 +2,7 @@ import {Repository} from "typeorm";
 import {Article} from "../models/article";
 
 export class ArticleService {
-    private articleRepository: Repository<Article>
-
+    private articleRepository: Repository<Article>;
 
     constructor(articleRepository: Repository<Article>) {
         this.articleRepository = articleRepository;
@@ -20,11 +19,9 @@ export class ArticleService {
         }
     }
 
-    private async findById(id: string): Promise<Article | null> {
+    public async findById(id: string): Promise<Article | null> {
         try {
-            return await this.articleRepository.findOne(
-                {where: {id: id}}
-            );
+            return await this.articleRepository.findOne({where: {id}});
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Error fetching article with this id: " + error.message);
@@ -33,9 +30,9 @@ export class ArticleService {
         }
     }
 
-    private async createArticle(article: Article): Promise<Article> {
+    public async createArticle(article: Article): Promise<Article> {
         try {
-            return await this.articleRepository.save(article)
+            return await this.articleRepository.save(article);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Article creation unknown error: " + error.message);
@@ -44,9 +41,9 @@ export class ArticleService {
         }
     }
 
-    private async updateArticle(article: Article): Promise<Article> {
+    public async updateArticle(article: Article): Promise<Article> {
         try {
-            return await this.articleRepository.save(article)
+            return await this.articleRepository.save(article);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Article update unknown error: " + error.message);
@@ -55,12 +52,12 @@ export class ArticleService {
         }
     }
 
-    private async findByByDomain(domainId: string): Promise<Article[]> {
+    public async findByByDomain(domainId: string): Promise<Article[]> {
         try {
             return await this.articleRepository
                 .createQueryBuilder("article")
                 .innerJoin("domains", "domain", "domain.article_id = article.id")
-                .where("domain.id = :domainId", { domainId })
+                .where("domain.id = :domainId", {domainId})
                 .getMany();
         } catch (error) {
             if (error instanceof Error) {
@@ -70,11 +67,11 @@ export class ArticleService {
         }
     }
 
-    private async findByTag(tag: string): Promise<Article[]> {
+    public async findByTag(tag: string): Promise<Article[]> {
         try {
             return await this.articleRepository
                 .createQueryBuilder("article")
-                .where(":tag = ANY(article.tags)", { tag })
+                .where(":tag = ANY(article.tags)", {tag})
                 .getMany();
         } catch (error) {
             if (error instanceof Error) {
