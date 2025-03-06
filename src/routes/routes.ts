@@ -15,7 +15,7 @@ import { db } from "../data-source/data-source";
 const articleRepository = db.getRepository(Article);
 const userRepository = db.getRepository(User);
 const voteRepository = db.getRepository(Vote);
-const domainRepository = db.getRepository(Domain);
+
 
 
 const articleService = new ArticleService(articleRepository);
