@@ -12,7 +12,6 @@ CREATE TABLE users
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(100)        NOT NULL,
     email           VARCHAR(255) UNIQUE NOT NULL,
-    profile_picture TEXT,
     points          INT              DEFAULT 0
 );
 
@@ -60,12 +59,11 @@ CREATE TABLE expertise
     FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
 );
 
-INSERT INTO users (id, name, email, profile_picture, points)
-VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'alice@example.com', 'https://example.com/alice.jpg',
+INSERT INTO users (id, name, email, points)
+VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'alice@example.com',
         50),
-       ('00000000-0000-0000-0000-000000000002', 'Bob Martin', 'bob@example.com', 'https://example.com/bob.jpg', 30),
-       ('00000000-0000-0000-0000-000000000003', 'Charlie Leclerc', 'charlie@example.com',
-        'https://example.com/charlie.jpg', 20);
+       ('00000000-0000-0000-0000-000000000002', 'Bob Martin', 'bob@example.com', 30),
+       ('00000000-0000-0000-0000-000000000003', 'Charlie Leclerc', 'charlie@example.com', 20);
 
 INSERT INTO articles (id, title, content, author_id, tags, upvotes, downvotes)
 VALUES ('10000000-0000-0000-0000-000000000001', 'Introduction à Docker', 'Contenu de l’article sur Docker...',
