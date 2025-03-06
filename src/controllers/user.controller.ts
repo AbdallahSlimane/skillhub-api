@@ -50,15 +50,15 @@ export class UserController {
         }
     }
 
-    // public async getExperts(req: Request, res: Response): Promise<void> {
-    //     const domainId = req.query.topic as string;
-    //     try {
-    //         const experts = await this.userService.findExpertise(domainId);
-    //         res.status(200).json(experts);
-    //     } catch (error: any) {
-    //         res.status(500).json({ error: error.message });
-    //     }
-    // }
+    public async getExperts(req: Request, res: Response): Promise<void> {
+        const domainName = req.query.topic as string;
+        try {
+            const experts = await this.userService.findTop3ExpertsByDomain(domainName);
+            res.status(200).json(experts);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 
     public async updateUser(req: Request, res: Response): Promise<void> {
         const userId = req.params.id;
