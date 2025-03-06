@@ -27,24 +27,25 @@ const userController = new UserController(userService);
 const voteController = new VoteController(voteService);
 
 
-const router = Router();
+const userRouter = Router();
+const articleRouter = Router();
+const voteRouter = Router();
+
+userRouter.post("/register", (req, res) => userController.register(req, res));
+userRouter.post("/login", (req, res) => userController.login(req, res));
+userRouter.get("/:id", (req, res) => userController.getUser(req, res));
+userRouter.put("/:id", (req, res) => userController.updateUser(req, res));
 
 
-router.post("/register", (req, res) => userController.register(req, res));
-router.post("/login", (req, res) => userController.login(req, res));
-router.get("/:id", (req, res) => userController.getUser(req, res));
-router.put("/:id", (req, res) => userController.updateUser(req, res));
+articleRouter.post("/create", (req, res) => articleController.createArticle(req, res));
+articleRouter.get("/articles", (req, res) => articleController.getArticles(req, res));
+articleRouter.get("/:id", (req, res) => articleController.getArticle(req, res));
+articleRouter.put("/update/:id", (req, res) => articleController.updateArticle(req, res));
+articleRouter.delete("/delete/:id", (req, res) => articleController.deleteArticle(req, res));
 
 
-router.post("/articles", (req, res) => articleController.createArticle(req, res));
-router.get("/articles", (req, res) => articleController.getArticles(req, res));
-router.get("/articles/:id", (req, res) => articleController.getArticle(req, res));
-router.put("/articles/:id", (req, res) => articleController.updateArticle(req, res));
-router.delete("/articles/:id", (req, res) => articleController.deleteArticle(req, res));
+voteRouter.post("/upvote", (req, res) => voteController.upvote(req, res));
+voteRouter.post("/downvote", (req, res) => voteController.downvote(req, res));
+voteRouter.get("/:articleId", (req, res) => voteController.getVotesByArticle(req, res));
 
-
-router.post("/votes/upvote", (req, res) => voteController.upvote(req, res));
-router.post("/votes/downvote", (req, res) => voteController.downvote(req, res));
-router.get("/votes/:articleId", (req, res) => voteController.getVotesByArticle(req, res));
-
-export default router;
+export { userRouter, articleRouter, voteRouter };
