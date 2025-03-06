@@ -11,8 +11,8 @@ CREATE TABLE users
 (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(100)        NOT NULL,
+    password            VARCHAR(50)        NOT NULL,
     email           VARCHAR(255) UNIQUE NOT NULL,
-    profile_picture TEXT,
     points          INT              DEFAULT 0
 );
 
@@ -50,22 +50,11 @@ CREATE TABLE votes
     FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE
 );
 
-CREATE TABLE expertise
-(
-    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id          UUID NOT NULL,
-    domain_id        UUID NOT NULL,
-    reputation_score INT              DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
-);
-
-INSERT INTO users (id, name, email, profile_picture, points)
-VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'alice@example.com', 'https://example.com/alice.jpg',
+INSERT INTO users (id, name, password, email, points)
+VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'password', 'alice@example.com',
         50),
-       ('00000000-0000-0000-0000-000000000002', 'Bob Martin', 'bob@example.com', 'https://example.com/bob.jpg', 30),
-       ('00000000-0000-0000-0000-000000000003', 'Charlie Leclerc', 'charlie@example.com',
-        'https://example.com/charlie.jpg', 20);
+       ('00000000-0000-0000-0000-000000000002', 'Bob Martin', 'password', 'bob@example.com', 30),
+       ('00000000-0000-0000-0000-000000000003', 'Charlie Leclerc', 'password', 'charlie@example.com', 20);
 
 INSERT INTO articles (id, title, content, author_id, tags, upvotes, downvotes)
 VALUES ('10000000-0000-0000-0000-000000000001', 'Introduction à Docker', 'Contenu de l’article sur Docker...',
@@ -100,11 +89,3 @@ VALUES ('20000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000
         '10000000-0000-0000-0000-000000000002', 1),
        ('20000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002',
         '10000000-0000-0000-0000-000000000003', 1);
-
-INSERT INTO expertise (id, user_id, domain_id, reputation_score)
-VALUES ('30000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001',
-        '50000000-0000-0000-0000-000000000012', 80),
-       ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002',
-        '50000000-0000-0000-0000-000000000011', 60),
-       ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003',
-        '50000000-0000-0000-0000-000000000014', 70);
