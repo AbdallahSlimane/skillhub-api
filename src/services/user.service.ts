@@ -1,9 +1,8 @@
-import {Repository} from "typeorm";
-import {User} from "../models/user";
+import { Repository } from "typeorm";
+import { User } from "../models/user";
 
 export class UserService {
-    private userRepository: Repository<User>
-
+    private userRepository: Repository<User>;
 
     constructor(userRepository: Repository<User>) {
         this.userRepository = userRepository;
@@ -20,11 +19,9 @@ export class UserService {
         }
     }
 
-    private async findById(id: string): Promise<User | null> {
+    public async findById(id: string): Promise<User | null> {
         try {
-            return await this.userRepository.findOne(
-                {where: {id: id}}
-            );
+            return await this.userRepository.findOne({ where: { id: id } });
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Error fetching user with this id: " + error.message);
@@ -33,7 +30,7 @@ export class UserService {
         }
     }
 
-    private async findExpertsByDomain(domainId: string): Promise<User[]> {
+    public async findExpertsByDomain(domainId: string): Promise<User[]> {
         try {
             return await this.userRepository
                 .createQueryBuilder('user')
@@ -49,9 +46,9 @@ export class UserService {
         }
     }
 
-    private async createUser(user: User): Promise<User> {
+    public async createUser(user: User): Promise<User> {
         try {
-            return await this.userRepository.save(user)
+            return await this.userRepository.save(user);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("User creation unknown error: " + error.message);
@@ -60,9 +57,9 @@ export class UserService {
         }
     }
 
-    private async updateUser(user: User): Promise<User> {
+    public async updateUser(user: User): Promise<User> {
         try {
-            return await this.userRepository.save(user)
+            return await this.userRepository.save(user);
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("User update unknown error: " + error.message);
