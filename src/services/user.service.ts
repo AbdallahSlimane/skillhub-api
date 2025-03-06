@@ -1,5 +1,5 @@
-import { Repository } from "typeorm";
-import { User } from "../models/user";
+import {Repository} from "typeorm";
+import {User} from "../models/user";
 
 export class UserService {
     private userRepository: Repository<User>;
@@ -63,5 +63,27 @@ export class UserService {
         }
     }
 
-
+    public async findTop3ExpertsByDomain(domain: string): Promise<any[]> {
+        try {
+            return await this.userRepository
+                .createQueryBuilder("user")
+                .select([
+                    "user.id",
+                    "user.name",
+                    "user.email"
+                ])
+                .addSelect("COUNT(DISTINCT article.id)", "articleCount")
+                .addSelect("COALESCE(SUM(vote.vote_value), 0)", "voteSum")
+                .addSelect("(COUNT(DISTINCT article.id) + COALESCE(SUM(vote.vote_value), 0))", "expertisePoints")
+                .innerJoin("articles", "article", "article.author_id = user.id")
+                .innerJoin("domains", "domain", "domain.article_id = article.id AND domain.name = :name", {name: domain})
+                .leftJoin("votes", "vote", "vote.article_id = article.id")
+                .groupBy("user.id")
+                .orderBy("expertisePoints", "DESC")
+                .limit(3)
+                .getRawMany();
+        } catch (error: any) {
+            throw new Error("Error fetching top experts: " + error.message);
+        }
+    }
 }
