@@ -59,7 +59,7 @@ CREATE TABLE expertise
     FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
 );
 
-INSERT INTO users (id, name, email, profile_picture, points)
+INSERT INTO users (id, name, email, points)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'alice@example.com',
         50),
        ('00000000-0000-0000-0000-000000000002', 'Bob Martin', 'bob@example.com', 30),
