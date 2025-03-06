@@ -34,6 +34,7 @@ const voteRouter = Router();
 userRouter.post("/register", (req, res) => userController.register(req, res));
 userRouter.post("/login", (req, res) => userController.login(req, res));
 userRouter.get("/:id", (req, res) => userController.getUser(req, res));
+userRouter.get("/users", (req, res) => userController.getAllUsers(req, res));
 userRouter.put("/:id", (req, res) => userController.updateUser(req, res));
 
 
