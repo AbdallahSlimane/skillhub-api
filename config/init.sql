@@ -1,10 +1,10 @@
--- Activer l'extension pour la génération d'UUID
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE
+EXTENSION IF NOT EXISTS "pgcrypto";
 
 DROP TABLE IF EXISTS votes;
-DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS expertise;
-DROP TABLE IF EXISTS leaderboard;
+DROP TABLE IF EXISTS domains;
+DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users
@@ -22,11 +22,21 @@ CREATE TABLE articles
     title      VARCHAR(255) NOT NULL,
     content    TEXT         NOT NULL,
     author_id  UUID         NOT NULL,
-    topic      VARCHAR(100),
+    tags       TEXT[] DEFAULT '{}',
     upvotes    INT              DEFAULT 0,
     downvotes  INT              DEFAULT 0,
     created_at TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE domains
+(
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    article_id  UUID         NOT NULL,
+    name        VARCHAR(100) NOT NULL,
+    description TEXT,
+    FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE,
+    CONSTRAINT unique_article_domain UNIQUE (article_id, name)
 );
 
 CREATE TABLE votes
@@ -34,7 +44,7 @@ CREATE TABLE votes
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id    UUID NOT NULL,
     article_id UUID NOT NULL,
-    vote_value INT CHECK (vote_value IN (1, -1)), -- 1 = Upvote, -1 = Downvote
+    vote_value INT CHECK (vote_value IN (1, -1)),
     created_at TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE
@@ -43,51 +53,58 @@ CREATE TABLE votes
 CREATE TABLE expertise
 (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id          UUID         NOT NULL,
-    topic            VARCHAR(100) NOT NULL,
+    user_id          UUID NOT NULL,
+    domain_id        UUID NOT NULL,
     reputation_score INT              DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-);
-
-CREATE TABLE leaderboard
-(
-    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id      UUID UNIQUE NOT NULL,
-    total_points INT              DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE
 );
 
 INSERT INTO users (id, name, email, profile_picture, points)
-VALUES ('a8a9c05f-0f8a-4e2f-84b2-1db78a4e0c69', 'Alice Dupont', 'alice@example.com', 'https://example.com/alice.jpg',
+VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'alice@example.com', 'https://example.com/alice.jpg',
         50),
-       ('9c42d9a1-fd33-45f0-a5e8-9f7293bf6d22', 'Bob Martin', 'bob@example.com', 'https://example.com/bob.jpg', 30),
-       ('d3a9f7f3-16b2-4b0f-bb71-7e8fa203a1b3', 'Charlie Leclerc', 'charlie@example.com',
+       ('00000000-0000-0000-0000-000000000002', 'Bob Martin', 'bob@example.com', 'https://example.com/bob.jpg', 30),
+       ('00000000-0000-0000-0000-000000000003', 'Charlie Leclerc', 'charlie@example.com',
         'https://example.com/charlie.jpg', 20);
 
-INSERT INTO articles (id, title, content, author_id, topic, upvotes, downvotes)
-VALUES ('11111111-1111-1111-1111-111111111111', 'Introduction à Docker', 'Contenu de l’article sur Docker...',
-        'a8a9c05f-0f8a-4e2f-84b2-1db78a4e0c69', 'DevOps', 5, 1),
-       ('22222222-2222-2222-2222-222222222222', 'Les bases de Node.js', 'Un guide pour débuter avec Node.js...',
-        '9c42d9a1-fd33-45f0-a5e8-9f7293bf6d22', 'Backend', 3, 0),
-       ('33333333-3333-3333-3333-333333333333', 'Maîtriser Angular', 'Techniques avancées pour Angular...',
-        'd3a9f7f3-16b2-4b0f-bb71-7e8fa203a1b3', 'Frontend', 4, 2);
+INSERT INTO articles (id, title, content, author_id, tags, upvotes, downvotes)
+VALUES ('10000000-0000-0000-0000-000000000001', 'Introduction à Docker', 'Contenu de l’article sur Docker...',
+        '00000000-0000-0000-0000-000000000001', ARRAY['docker', 'installation', 'basics'], 5, 1),
+       ('10000000-0000-0000-0000-000000000002', 'Les bases de Node.js', 'Un guide pour débuter avec Node.js...',
+        '00000000-0000-0000-0000-000000000002', ARRAY['nodejs', 'javascript', 'installation'], 3, 0),
+       ('10000000-0000-0000-0000-000000000003', 'Maîtriser Angular', 'Techniques avancées pour Angular...',
+        '00000000-0000-0000-0000-000000000003', ARRAY['angular', 'framework', 'advanced'], 4, 2);
+
+INSERT INTO domains (id, article_id, name, description)
+VALUES ('50000000-0000-0000-0000-000000000010', '10000000-0000-0000-0000-000000000001', 'DevOps',
+        'Pratiques de déploiement'),
+       ('50000000-0000-0000-0000-000000000011', '10000000-0000-0000-0000-000000000001', 'Architecture',
+        'Conception et architecture logicielle.');
+
+INSERT INTO domains (id, article_id, name, description)
+VALUES ('50000000-0000-0000-0000-000000000012', '10000000-0000-0000-0000-000000000002', 'Java',
+        'Langage de programmation Java'),
+       ('50000000-0000-0000-0000-000000000013', '10000000-0000-0000-0000-000000000002', 'DevOps',
+        'Pratiques de déploiement');
+
+INSERT INTO domains (id, article_id, name, description)
+VALUES ('50000000-0000-0000-0000-000000000014', '10000000-0000-0000-0000-000000000003', 'Architecture',
+        'Conception et architecture logicielle.');
 
 INSERT INTO votes (id, user_id, article_id, vote_value)
-VALUES ('44444444-4444-4444-4444-444444444444', '9c42d9a1-fd33-45f0-a5e8-9f7293bf6d22',
-        '11111111-1111-1111-1111-111111111111', 1),
-       ('55555555-5555-5555-5555-555555555555', 'd3a9f7f3-16b2-4b0f-bb71-7e8fa203a1b3',
-        '11111111-1111-1111-1111-111111111111', -1),
-       ('66666666-6666-6666-6666-666666666666', 'a8a9c05f-0f8a-4e2f-84b2-1db78a4e0c69',
-        '22222222-2222-2222-2222-222222222222', 1),
-       ('77777777-7777-7777-7777-777777777777', '9c42d9a1-fd33-45f0-a5e8-9f7293bf6d22',
-        '33333333-3333-3333-3333-333333333333', 1);
+VALUES ('20000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002',
+        '10000000-0000-0000-0000-000000000001', 1),
+       ('20000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003',
+        '10000000-0000-0000-0000-000000000001', -1),
+       ('20000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001',
+        '10000000-0000-0000-0000-000000000002', 1),
+       ('20000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002',
+        '10000000-0000-0000-0000-000000000003', 1);
 
-INSERT INTO expertise (id, user_id, topic, reputation_score)
-VALUES ('88888888-8888-8888-8888-888888888888', 'a8a9c05f-0f8a-4e2f-84b2-1db78a4e0c69', 'DevOps', 80),
-       ('99999999-9999-9999-9999-999999999999', '9c42d9a1-fd33-45f0-a5e8-9f7293bf6d22', 'Design pattern', 60),
-       ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'd3a9f7f3-16b2-4b0f-bb71-7e8fa203a1b3', 'Architecture', 70);
-
-INSERT INTO leaderboard (id, user_id, total_points)
-VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'a8a9c05f-0f8a-4e2f-84b2-1db78a4e0c69', 50),
-       ('cccccccc-cccc-cccc-cccc-cccccccccccc', '9c42d9a1-fd33-45f0-a5e8-9f7293bf6d22', 30),
-       ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'd3a9f7f3-16b2-4b0f-bb71-7e8fa203a1b3', 20);
+INSERT INTO expertise (id, user_id, domain_id, reputation_score)
+VALUES ('30000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001',
+        '50000000-0000-0000-0000-000000000012', 80),
+       ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002',
+        '50000000-0000-0000-0000-000000000011', 60),
+       ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003',
+        '50000000-0000-0000-0000-000000000014', 70);
