@@ -9,15 +9,19 @@ export class User {
     @Column({ length: 100, name: "name" })
     name: string;
 
+    @Column({ length: 50, name: "password" })
+    password: string;
+
     @Column({ unique: true, name: "email" })
     email: string;
 
     @Column({ default: 0, name: "points" })
     points: number;
 
-    constructor(name: string, email: string, points: number) {
+    constructor(name: string, password: string, email: string, points: number) {
         this.id = uuidv4();
         this.name = name;
+        this.password = password;
         this.email = email;
         this.points = points;
     }
