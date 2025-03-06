@@ -1,0 +1,36 @@
+{
+  "name": "skillhub-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec \"npx tsc && node dist/index.js\""  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbdallahSlimane/skillhub-api.git"
+  },
+  "author": "Sonia, Celina, Carl Steven, Abdallah",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.0",
+    "@types/uuid": "^10.0.0",
+    "@vinejs/vine": "^3.0.0",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.1.13",
+    "ts-node-dev": "^2.0.0",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.7.3",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "kill-port": "^2.0.1",
+    "nodemon": "^3.1.9"
+  }
+}
