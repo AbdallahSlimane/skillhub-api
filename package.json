@@ -5,13 +5,15 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch src --ext ts --exec \"npx tsc && node dist/index.js\""  },
+    "dev": "nodemon --watch src --ext ts --exec \"npx tsc && node dist/index.js\""
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/AbdallahSlimane/skillhub-api.git"
   },
   "author": "Sonia, Celina, Carl Steven, Abdallah",
   "dependencies": {
+    "@mistralai/mistralai": "^1.5.0",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
     "@types/uuid": "^10.0.0",
