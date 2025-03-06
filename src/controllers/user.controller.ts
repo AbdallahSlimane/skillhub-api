@@ -17,7 +17,23 @@ export class UserController {
     }
 
     public async login(req: Request, res: Response): Promise<void> {
-        res.status(200).json({ message: "Login endpoint not implemented yet." });
+        const { email, password } = req.body;
+        try {
+            const user: User | null = await this.userService.findByEmail(email);
+            if (!user) {
+                res.status(404).json({ error: "User not found" });
+                return;
+            }
+
+            if (user.password !== password) {
+                res.status(401).json({ error: "Invalid credentials" });
+                return;
+            }
+
+            res.status(200).json({ message: "Login successful", user });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
     }
 
     public async getUser(req: Request, res: Response): Promise<void> {
@@ -34,15 +50,15 @@ export class UserController {
         }
     }
 
-    public async getExperts(req: Request, res: Response): Promise<void> {
-        const domainId = req.query.topic as string;
-        try {
-            const experts = await this.userService.findExpertsByDomain(domainId);
-            res.status(200).json(experts);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message });
-        }
-    }
+    // public async getExperts(req: Request, res: Response): Promise<void> {
+    //     const domainId = req.query.topic as string;
+    //     try {
+    //         const experts = await this.userService.findExpertise(domainId);
+    //         res.status(200).json(experts);
+    //     } catch (error: any) {
+    //         res.status(500).json({ error: error.message });
+    //     }
+    // }
 
     public async updateUser(req: Request, res: Response): Promise<void> {
         const userId = req.params.id;

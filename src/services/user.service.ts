@@ -30,19 +30,14 @@ export class UserService {
         }
     }
 
-    public async findExpertsByDomain(domainId: string): Promise<User[]> {
+    public async findByEmail(email: string): Promise<User | null> {
         try {
-            return await this.userRepository
-                .createQueryBuilder('user')
-                .innerJoin('expertise', 'exp', 'exp.user_id = user.id')
-                .where('exp.domain_id = :domainId', { domainId })
-                .orderBy('exp.reputation_score', 'DESC')
-                .getMany();
+            return await this.userRepository.findOne({ where: { id: email } });
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error("Error fetching experts for this domain: " + error.message);
+                throw new Error("Error fetching user with this email: " + error.message);
             }
-            throw new Error('Unknown Error fetching experts for this domain');
+            throw new Error('Unknown Error fetching user with this email');
         }
     }
 
@@ -67,4 +62,6 @@ export class UserService {
             throw new Error('User update unknown error');
         }
     }
+
+
 }
