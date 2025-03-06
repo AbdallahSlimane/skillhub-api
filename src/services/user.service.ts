@@ -76,10 +76,10 @@ export class UserService {
                 .addSelect("COALESCE(SUM(vote.vote_value), 0)", "voteSum")
                 .addSelect("(COUNT(DISTINCT article.id) + COALESCE(SUM(vote.vote_value), 0))", "expertisePoints")
                 .innerJoin("articles", "article", "article.author_id = user.id")
-                .innerJoin("domains", "domain", "domain.article_id = article.id AND domain.name = :name", {name: domain})
+                .innerJoin("domains", "domain", "domain.article_id = article.id AND domain.name = :name", { name: domain })
                 .leftJoin("votes", "vote", "vote.article_id = article.id")
                 .groupBy("user.id")
-                .orderBy("expertisePoints", "DESC")
+                .orderBy("(COUNT(DISTINCT article.id) + COALESCE(SUM(vote.vote_value), 0))", "DESC")
                 .limit(3)
                 .getRawMany();
         } catch (error: any) {
