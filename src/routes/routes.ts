@@ -29,7 +29,7 @@ const shortArticleRepository = db.getRepository(ShortArticle);
 const articleService = new ArticleService(articleRepository);
 const userService = new UserService(userRepository);
 const voteService = new VoteService(voteRepository, articleRepository);
-const chatbotService = new ChatbotService(chatbotRepository);
+const chatbotService = new ChatbotService(chatbotRepository, userService);
 const shortArticleService = new ShortArticleService(shortArticleRepository);
 
 
