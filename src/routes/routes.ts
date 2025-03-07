@@ -15,6 +15,8 @@ import { db } from "../data-source/data-source";
 import {Chatbot} from "../models/chatbot";
 import {ChatbotService} from "../services/chatbot.service";
 import {ChatbotController} from "../controllers/chatbot.controller";
+import {DomainService} from "../services/domain.service";
+import {Domain} from "../models/domain";
 
 
 
@@ -23,6 +25,7 @@ const userRepository = db.getRepository(User);
 const voteRepository = db.getRepository(Vote);
 const chatbotRepository = db.getRepository(Chatbot);
 const shortArticleRepository = db.getRepository(ShortArticle);
+const domainRepository = db.getRepository(Domain);
 
 
 
@@ -31,9 +34,10 @@ const userService = new UserService(userRepository);
 const voteService = new VoteService(voteRepository, articleRepository);
 const chatbotService = new ChatbotService(chatbotRepository);
 const shortArticleService = new ShortArticleService(shortArticleRepository);
+const domainService = new DomainService(domainRepository);
 
 
-const articleController = new ArticleController(articleService, userService);
+const articleController = new ArticleController(articleService, userService, domainService);
 const userController = new UserController(userService);
 const voteController = new VoteController(voteService);
 const chatbotController = new ChatbotController(chatbotService);

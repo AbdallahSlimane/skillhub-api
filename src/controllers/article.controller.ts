@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import { ArticleService } from "../services/article.service";
 import { UserService } from "../services/user.service";
+import { DomainService } from "../services/domain.service";
 import { Article } from "../models/article";
 
 export class ArticleController {
     constructor(
         private articleService: ArticleService,
-        private userService: UserService
+        private userService: UserService,
+        private domainService: DomainService
     ) {}
 
-
     public async createArticle(req: Request, res: Response): Promise<void> {
-        const { title, content, author_id, tags } = req.body;
+        const { title, content, author_id, tags, domainName, domainDescription } = req.body;
         try {
-
             const user = await this.userService.findById(author_id);
             if (!user) {
                 res.status(404).json({ error: "User not found" });
@@ -31,7 +31,17 @@ export class ArticleController {
                 new Date()
             );
             const createdArticle = await this.articleService.createArticle(article);
-            res.status(201).json(createdArticle);
+
+            let createdDomain = null;
+            if (domainName) {
+                createdDomain = await this.domainService.createDomain(
+                    createdArticle,
+                    domainName,
+                    domainDescription || ""
+                );
+            }
+
+            res.status(201).json({ article: createdArticle, domain: createdDomain });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
@@ -52,7 +62,6 @@ export class ArticleController {
         }
     }
 
-
     public async getArticle(req: Request, res: Response): Promise<void> {
         const articleId = req.params.id;
         try {
@@ -66,7 +75,6 @@ export class ArticleController {
             res.status(500).json({ error: error.message });
         }
     }
-
 
     public async updateArticle(req: Request, res: Response): Promise<void> {
         const articleId = req.params.id;
@@ -87,10 +95,8 @@ export class ArticleController {
         }
     }
 
-
     public async deleteArticle(req: Request, res: Response): Promise<void> {
         const articleId = req.params.id;
-
         const userId = req.body.userId;
         try {
             await this.articleService.deleteArticle(articleId, userId);
