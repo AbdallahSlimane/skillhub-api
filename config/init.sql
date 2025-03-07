@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS expertise;
 DROP TABLE IF EXISTS domains;
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS short_articles;
 
 CREATE TABLE users
 (
@@ -50,6 +51,15 @@ CREATE TABLE votes
     FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE
 );
 
+CREATE TABLE short_articles
+(
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    article_id   UUID NOT NULL,
+    short_content TEXT    NOT NULL,
+    FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE
+);
+
+
 INSERT INTO users (id, name, password, email, points)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Alice Dupont', 'password', 'alice@example.com',
         50),
@@ -89,3 +99,8 @@ VALUES ('20000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000
         '10000000-0000-0000-0000-000000000002', 1),
        ('20000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002',
         '10000000-0000-0000-0000-000000000003', 1);
+
+INSERT INTO short_articles (id, short_content, article_id)
+VALUES ('30000000-0000-0000-0000-000000000001', 'Introduction à Docker...', '10000000-0000-0000-0000-000000000001'),
+       ('30000000-0000-0000-0000-000000000002', 'Les bases de Node.js...', '10000000-0000-0000-0000-000000000002'),
+       ('30000000-0000-0000-0000-000000000003', 'Maîtriser Angular...', '10000000-0000-0000-0000-000000000003');
