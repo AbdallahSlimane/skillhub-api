@@ -50,8 +50,17 @@ export class UserController {
         }
     }
 
+    public async getAllUsers(req: Request, res: Response): Promise<void> {
+        try {
+            const users = await this.userService.findAll();
+            res.status(200).json(users);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
     public async getExperts(req: Request, res: Response): Promise<void> {
-        const domainName = req.query.topic as string;
+        const domainName = req.params.topic as string;
         try {
             const experts = await this.userService.findTop3ExpertsByDomain(domainName);
             res.status(200).json(experts);
