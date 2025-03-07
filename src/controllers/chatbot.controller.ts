@@ -8,9 +8,9 @@ export class ChatbotController {
     }
 
     public async createMessage(req: Request, res: Response): Promise<void> {
-        const { message, type } = req.body;
+        const { message, type, history } = req.body;
         try {
-            const result = await this.chatbotService.postMessage(message, type);
+            const result = await this.chatbotService.postMessage(message, type, history);
             res.status(200).json({ summary: result });
         } catch (error: any) {
             res.status(500).json({ error: error.message });

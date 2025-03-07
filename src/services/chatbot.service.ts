@@ -9,16 +9,15 @@ export class ChatbotService {
         this.chatbotRepository = chatbotRepository;
     }
 
-    public async postMessage(message: string, type: string): Promise<string> {
+    public async postMessage(message: string, type: string, history: string = ""): Promise<string> {
         if (type === "shortn") {
             this.promptMessage = "role\"user\" Synthétiser l'article en un paragraphe:"; // TODO Add article
-        } else if (type === "chatBot") {
+        } else if (type === "start") {
             this.promptMessage = `Donne moi uniquement l'id et le nom de l'article qui se rapproche le plus de cette question : ${message} réponse se fera sous format { id: xxxxxxx, titre: "titre"} liste des articles :`;
             // TODO get 3 articles
         } else {
             this.promptMessage = "";
         }
-
         try {
             const content = this.promptMessage === "" ? message : this.promptMessage;
             const response = await fetch("https://api.mistral.ai/v1/chat/completions", {
@@ -32,7 +31,7 @@ export class ChatbotService {
                     messages: [
                         {
                             role: "user",
-                            content: content
+                            content: history + content
                         }
                     ],
                     temperature: 0.7,
