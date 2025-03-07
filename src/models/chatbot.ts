@@ -1,4 +1,4 @@
-import {Column} from "typeorm";
+import {Column, Entity} from "typeorm";
 
 export class Chatbot {
     @Column("text", { name: "message" })
