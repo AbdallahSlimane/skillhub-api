@@ -9,27 +9,35 @@ import { Article } from "../models/article";
 import { User } from "../models/user";
 import { Vote } from "../models/vote";
 import { db } from "../data-source/data-source";
+import {Chatbot} from "../models/chatbot";
+import {ChatbotService} from "../services/chatbot.service";
+import {ChatbotController} from "../controllers/chatbot.controller";
+
 
 
 const articleRepository = db.getRepository(Article);
 const userRepository = db.getRepository(User);
 const voteRepository = db.getRepository(Vote);
+const chatbotRepository = db.getRepository(Chatbot);
 
 
 
 const articleService = new ArticleService(articleRepository);
 const userService = new UserService(userRepository);
 const voteService = new VoteService(voteRepository, articleRepository);
+const chatbotService = new ChatbotService(chatbotRepository);
 
 
 const articleController = new ArticleController(articleService, userService);
 const userController = new UserController(userService);
 const voteController = new VoteController(voteService);
+const chatbotController = new ChatbotController(chatbotService);
 
 
 const userRouter = Router();
 const articleRouter = Router();
 const voteRouter = Router();
+const chatbotRouter = Router();
 
 userRouter.post("/register", (req, res) => userController.register(req, res));
 userRouter.post("/login", (req, res) => userController.login(req, res));
@@ -46,8 +54,11 @@ articleRouter.put("/update/:id", (req, res) => articleController.updateArticle(r
 articleRouter.delete("/delete/:id", (req, res) => articleController.deleteArticle(req, res));
 
 
+
 voteRouter.post("/upvote", (req, res) => voteController.upvote(req, res));
 voteRouter.post("/downvote", (req, res) => voteController.downvote(req, res));
 voteRouter.get("/:articleId", (req, res) => voteController.getVotesByArticle(req, res));
 
-export { userRouter, articleRouter, voteRouter };
+chatbotRouter.post("/chatbot", (req, res) => chatbotController.createMessage(req, res));
+
+export { userRouter, articleRouter, voteRouter, chatbotRouter };
