@@ -3,7 +3,7 @@ import express from "express";
 import { config } from "dotenv";
 import cors from 'cors';
 import {db, initialize_typeorm} from "./data-source/data-source";
-import {userRouter, articleRouter, voteRouter, chatbotRouter} from "./routes/routes";
+import {userRouter, articleRouter, voteRouter, chatbotRouter, shortArticleRouter} from "./routes/routes";
 
 config();
 
@@ -21,6 +21,7 @@ export async function startServer() {
         app.use('/article', articleRouter);
         app.use('/vote', voteRouter);
         app.use('/chatbot', chatbotRouter);
+        app.use('/short-article', shortArticleRouter);
 
         await initialize_typeorm(db);
         console.log("Database connected successfully");
