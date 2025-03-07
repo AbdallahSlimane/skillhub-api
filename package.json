@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/AbdallahSlimane/skillhub-api.git"
   },
-  "author": "Sonia, Celina, Carl Steven, Abdallah",
+  "author": "Sonia, Celina, Karl, Steven, Abdallah, Jihad, Edgard",
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
