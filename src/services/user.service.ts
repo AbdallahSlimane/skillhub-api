@@ -32,7 +32,7 @@ export class UserService {
 
     public async findByEmail(email: string): Promise<User | null> {
         try {
-            return await this.userRepository.findOne({ where: { id: email } });
+            return await this.userRepository.findOne({ where: { email: email } });
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error("Error fetching user with this email: " + error.message);
